@@ -2,6 +2,11 @@ package fighter_X;
 
 import javafx.scene.shape.Rectangle;
 
+/**
+ * @author James Yu Lin
+ * Collider class
+ * 
+ */
 public abstract class Collider extends Rectangle{
 	static Collider[] colliders = {};
 	

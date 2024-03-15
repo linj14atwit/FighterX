@@ -27,14 +27,10 @@ public class MainStage  extends Application{
 		
 		Pane bp = new Pane();
 		
-		Rectangle c = new Rectangle(60, 80);
-		c.setX(10);
-		c.setY(20);
-		System.out.println(c.getX()+", "+ c.getY());
-		bp.getChildren().add(c);
+		
 		bp.setMaxSize(1280, 720);
 		primaryStage.setScene(new Scene(bp, bp.getMaxWidth(), bp.getMaxHeight()));
-		primaryStage.setTitle("b");
+		primaryStage.setTitle("FighterX");
 		primaryStage.show();
 		primaryStage.setResizable(false);
 		

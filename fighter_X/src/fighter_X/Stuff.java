@@ -1,5 +1,7 @@
 package fighter_X;
 
+//for testing code, can ignore 
+
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
