@@ -8,8 +8,15 @@ import javafx.scene.shape.Rectangle;
  * 
  */
 public abstract class Collider extends Rectangle{
-	static Collider[] colliders = {};
 	
+	public Collider(double x, double y, double width, double height){
+		super(x, y, width, height);
+	}
+	/**
+	 * 
+	 * @param Collider c
+	 * @return if this collider and c overlaps
+	 */
 	public boolean collidesWith(Collider c) {
 		if(!canCollide(c)) return false;
 		if(
