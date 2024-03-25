@@ -21,7 +21,8 @@ import javafx.animation.Timeline;
 public class MainStage  extends Application{
 	
 	private static Character player1, player2;
-	public static int i=0;
+	private static Stage stage;
+	public static final long FRAME_RATE = 16666666;//value of 1 single frame
 	
 	public static void main(String[] args) {
 		launch(args);
@@ -29,14 +30,15 @@ public class MainStage  extends Application{
 
 	@Override
 	public void start(Stage primaryStage) throws Exception {
-		// TODO Auto-generated method stub
+		
+		stage = primaryStage;
 		
 		Pane bp = new Pane();
 		
 		
 		bp.setMaxSize(1280, 720);
 		
-		player1 = new Character(40, 400, 60, 180, 40);
+		player1 = new Character(bp, 40, 400, 60, 180, 40);
 		
 		bp.getChildren().add(player1);
 		
@@ -50,14 +52,13 @@ public class MainStage  extends Application{
 		
 		player1.requestFocus();
 		
-		Timeline timeline = new Timeline(new KeyFrame(Duration.millis(16)));
 		AnimationTimer animator = new AnimationTimer() {
 			long startTime=0;
 		    @Override
 		    public void handle(long arg0) {
 		        long currentTime = System.nanoTime();
-		        if (60 <= (currentTime - startTime)) {
-		            update();
+		        if (FRAME_RATE <= (currentTime - startTime)) {
+		            update(currentTime - startTime);
 		            startTime = currentTime;
 		        }
 		    }
@@ -66,8 +67,9 @@ public class MainStage  extends Application{
 		
 	}
 	
-	public void update() {
-		player1.update();
+	public void update(long deltaTime) {
+		player1.update(deltaTime);
+		
 	}
 
 }

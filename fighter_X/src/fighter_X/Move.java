@@ -1,61 +1,51 @@
 package fighter_X;
 
+import javafx.scene.layout.Pane;
+
 /**
  * @author James Yu Lin
  */
-public class Move extends Hitbox{
+public class Move {
 
-	public static final String GRAB = "GRAB";
-	public static final String AIR = "AIR";
-	public static final String LOW = "LOW";
-	public static final String HIGH = "HIGH";
-	public static final String NORMAL = "N";
-	private String type = NORMAL;
-	
+	private Pane parent;
+	private String type;
+	private double width, height;
 	private double offSetX, offSetY;
 	private double damage;
+	
+	private boolean active;
+	private int duration;//number of active frames
+	private long timer=0;
+	
+	private Attack now;
 
-	public Move(String type, double damage, double width, double height, double x, double y, double offSetX, double offSetY){
-		super(x+offSetX, y+offSetY, width, height);
-		this.type = type;
+	public Move(Pane parent, String type, double damage, int duration, double width, double height, double offSetX, double offSetY){
+		this.parent = parent;
+		this.duration = duration;
 		this.damage = damage;
+		this.width = width;
+		this.height = height;
 		this.offSetX = offSetX;
 		this.offSetY = offSetY;
 	}
 	
-	public void connect(Character c){
-		if(this.collidesWith(c)){
-			c.takeDamage(damage);
-		}
+	public void doAttack(double x, double y) {
+		active = true;
+		now = new Attack(type, damage, width, height, x+offSetX, y+offSetY);
+		parent.getChildren().add(now);
 	}
 	
-	@Override
-	public boolean canCollide(Collider c) {
-		if(super.canCollide(c)) {
-			Hurtbox hb = (Hurtbox) c;
-			return !hb.getInvinc() &&
-				(this.isGrab() && hb.getGrabable()) ||
-				(this.isAir() && !hb.getAirInvinc());
+	public void update(long deltaTime) {
+		if(!active) return;
+		timer += deltaTime;
+		if(timer>(duration*MainStage.FRAME_RATE)) {
+			boolean b = parent.getChildren().remove(now);
+			now = null;
+//			System.out.printf("%s, %d, %d, %b%n", timer, deltaTime, duration*MainStage.FRAME_RATE, b);
+			timer = 0;
+			active = false;
 		}
-		return false;
 	}
-
-	public boolean isGrab(){
-		return type.equals(GRAB);
-	}
-
-	public boolean isAir(){
-		return type.equals(AIR);
-	}
-	
-	public boolean isLow(){
-		return type.equals(LOW);
-	}
-
-	public boolean isHigh(){
-		return type.equals(HIGH);
-	}
-
 
 
 }
