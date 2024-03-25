@@ -1,5 +1,7 @@
 package fighter_X;
 
+import javafx.scene.paint.Color;
+
 public class Hurtbox extends Collider{
 	
 	private boolean isGrabable;
@@ -8,6 +10,8 @@ public class Hurtbox extends Collider{
 	
 	public Hurtbox(double x, double y, double width, double height){
 		super(x, y, width, height);
+		this.setFill(new Color(0.2, 0.95, 0.95, 0.6));
+		this.setStroke(new Color(0.3, 0.6, 1, 1));
 	}
 
 	@Override

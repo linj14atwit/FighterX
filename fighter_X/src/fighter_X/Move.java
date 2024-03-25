@@ -24,7 +24,7 @@ public class Move extends Hitbox{
 	}
 	
 	public void connect(Character c){
-		if(this.collidesWith(c.getHurtbox())){
+		if(this.collidesWith(c)){
 			c.takeDamage(damage);
 		}
 	}
