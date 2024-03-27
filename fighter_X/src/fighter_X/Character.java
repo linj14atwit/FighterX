@@ -7,20 +7,27 @@ public class Character extends Hurtbox{
 	
 	private Pane parent; 
 	private int hp;
-	private int ground;
+	
+	private double standing_height;
+	private double crouch_height;
+	private double ground;
 	
 	private int facing_left;
 	private int move_direction;
+	
 	private double speed;
 	
 	private Move current = null;
+	private boolean is_crouched=false;
 	private Move light;
 	
 	public Character(Pane parent, double x, double y, double width, double height) {
-		this(parent, x, y, width, height, 40);
+		this(parent, x, y, width, height, y+height);
+		standing_height = height;
+		crouch_height = this.getHeight()*0.5;
 	}
 	
-	public Character(Pane parent, double x, double y, double width, double height, int ground) {
+	public Character(Pane parent, double x, double y, double width, double height, double ground) {
 		super(x, y, width, height);
 		this.ground = ground;
 		hp = 1000;
@@ -35,6 +42,10 @@ public class Character extends Hurtbox{
 			switch (e.getCode()) {
 			case A:
 				move_direction = -1;
+				break;
+			
+			case S:
+				is_crouched = true;
 				break;
 				
 			case D:
@@ -56,6 +67,10 @@ public class Character extends Hurtbox{
 			case A:
 				move_direction = move_direction==-1 ? 0 : move_direction; 
 				break;
+			
+			case S:
+				is_crouched = false;
+				break;
 				
 			case D:
 				move_direction = move_direction==1 ? 0 : move_direction; 
@@ -71,6 +86,15 @@ public class Character extends Hurtbox{
 	public void update(long deltaTime) {
 		this.setX(this.getX()+5*move_direction);
 		if(current != null) current.update(deltaTime);
+		
+		if(is_crouched) {
+			this.setY(ground-crouch_height);
+			this.setHeight(crouch_height);
+		}
+		else {
+			this.setY(ground-standing_height);
+			this.setHeight(standing_height);
+		}
 	}
 
 	
