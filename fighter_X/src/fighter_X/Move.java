@@ -72,12 +72,22 @@ public class Move {
 		this.offSetY = offSetY;
 	}
 	
+	/**
+	 * spawn the attack with offSet from Character position x, y
+	 * @param x
+	 * @param y
+	 */
 	public void doAttack(double x, double y) {
 		active = true;
 		now = new Attack(type, damage, width, height, x+offSetX, y+offSetY);
 		parent.getChildren().add(now);
 	}
 	
+	/**
+	 * update the current status of the move
+	 * @param deltaTime
+	 * @return
+	 */
 	public Move update(long deltaTime) {
 		if(!active) return null;
 		if(!hasTriggered) {

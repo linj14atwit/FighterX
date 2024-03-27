@@ -53,6 +53,7 @@ public class Character extends Hurtbox{
 	 * @param width
 	 * @param height
 	 * @param ground
+	 * @param input
 	 */
 	public Character(Pane parent, double x, double y, double width, double height, double ground, boolean input) {
 		super(x, y, width, height);
@@ -69,6 +70,9 @@ public class Character extends Hurtbox{
 		if(input)this.enableInput();
 	}
 	
+	/**
+	 * enables input to be registered
+	 */
 	public void enableInput() {
 		//Input Handler
 		this.setOnKeyPressed(e->{
@@ -121,6 +125,11 @@ public class Character extends Hurtbox{
 			}
 		});
 	}
+	
+	/**
+	 * updates the current status of Character
+	 * @param deltaTime
+	 */
 	public void update(long deltaTime) {
 		this.move();
 		if(current != null) {
@@ -137,14 +146,26 @@ public class Character extends Hurtbox{
 			this.setHeight(standing_height);
 		}
 	}
-
+	
+	/**
+	 * handles movment of character
+	 */
 	public void move() {
 		this.setX(this.getX()+5*move_direction);
 	}
 	
+	/**
+	 * specifies the Opponents character object
+	 * @param c
+	 */
 	public void addOpponent(Character c) {
 		this.opponent = c;
 	}
+	
+	/**
+	 * takes damage
+	 * @param d
+	 */
 	public void takeDamage(double d) {
 		hp -= d;
 	}
