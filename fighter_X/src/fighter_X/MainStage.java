@@ -38,7 +38,7 @@ public class MainStage  extends Application{
 		
 		bp.setMaxSize(1280, 720);
 		
-		player1 = new Character(bp, 40, 400, 60, 180, 40);
+		player1 = new Character(bp, 40, 400, 60, 180);
 		
 		bp.getChildren().add(player1);
 		
