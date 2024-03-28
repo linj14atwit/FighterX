@@ -36,7 +36,7 @@ public class Move {
 	 * @param damage How much damage to do
 	 * @param duration How long the hitbox lasts
 	 * @param width
-	 * @param height
+	 * @param height	
 	 * @param offSetX
 	 * @param offSetY
 	 */

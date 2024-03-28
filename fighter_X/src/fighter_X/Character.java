@@ -6,7 +6,7 @@ import javafx.scene.layout.Pane;
 /**
  * @author James Yu Lin
  * 
- * 
+ * Character class
  */
 public class Character extends Hurtbox{
 	
@@ -44,6 +44,8 @@ public class Character extends Hurtbox{
 	public Character(Pane parent, double x, double y, double width, double height, double ground) {
 		this(parent, x, y, width, height, ground, true);
 	}
+	
+	
 	/**
 	 * Constructor
 	 * 
@@ -70,6 +72,7 @@ public class Character extends Hurtbox{
 		if(input)this.enableInput();
 	}
 	
+	
 	/**
 	 * enables input to be registered
 	 */
@@ -78,6 +81,8 @@ public class Character extends Hurtbox{
 		this.setOnKeyPressed(e->{
 			if(current==null) { //If the character is performing an action it is locked out of grounded movement
 				switch (e.getCode()) {
+				case W:
+//					startJump();
 				case A:
 					move_direction = -1;
 					break;
@@ -148,7 +153,7 @@ public class Character extends Hurtbox{
 	}
 	
 	/**
-	 * handles movment of character
+	 * handles movement of character
 	 */
 	public void move() {
 		this.setX(this.getX()+5*move_direction);
