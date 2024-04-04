@@ -10,6 +10,7 @@ package fighter_X;
  * 
  * Attack also will be dealing damage to the hurtbox it collides with
  */
+
 public class Attack extends Hitbox{
 
 	public static final String GRAB = "GRAB";

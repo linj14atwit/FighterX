@@ -19,7 +19,10 @@ public class Character extends Hurtbox{
 	private double ground;
 	
 	private int facing_left;
-	private int move_direction;
+	private int move_direction=0;
+	
+	private boolean is_jumping;
+	private long jump_timer;
 	
 	private double speed;
 	
@@ -82,7 +85,8 @@ public class Character extends Hurtbox{
 			if(current==null) { //If the character is performing an action it is locked out of grounded movement
 				switch (e.getCode()) {
 				case W:
-//					startJump();
+					startJump();
+					break;
 				case A:
 					move_direction = -1;
 					break;
@@ -136,17 +140,19 @@ public class Character extends Hurtbox{
 	 * @param deltaTime
 	 */
 	public void update(long deltaTime) {
-		this.move();
+		this.move(deltaTime);
 		if(current != null) {
 			current = current.update(deltaTime);
-			move_direction = move_direction!=0 ? 0 : move_direction; 
+//			move_direction = move_direction!=0 ? 0 : move_direction; 
 		}
 		
 		if(is_crouched) {
+//			System.out.printf("y:%f -> ", this.getY());
 			this.setY(ground-crouch_height);
+//			System.out.println(this.getY());
 			this.setHeight(crouch_height);
 		}
-		else if(current==null){
+		else if(current==null && !is_jumping){
 			this.setY(ground-standing_height);
 			this.setHeight(standing_height);
 		}
@@ -155,10 +161,28 @@ public class Character extends Hurtbox{
 	/**
 	 * handles movement of character
 	 */
-	public void move() {
+	public void move(long deltaTime) {
 		this.setX(this.getX()+5*move_direction);
+		
+		if(is_jumping) {
+			jump_timer += deltaTime;
+			System.out.printf("y:%.0f ->", this.getY());
+			this.setY(this.getY()-(-(jump_timer/MainStage.FRAME_RATE)+30));
+			System.out.printf("%.0f, x:%d%n", this.getY(), (jump_timer/MainStage.FRAME_RATE));
+//			System.out.println(jump_timer/MainStage.FRAME_RATE);
+			System.out.println(move_direction);
+			
+			if(this.getHeight()+this.getY()>ground+4 && jump_timer>4*MainStage.FRAME_RATE) {
+				is_jumping = false;
+				jump_timer = 0;
+			}
+		}
 	}
 	
+	public void startJump() {
+		is_jumping = true;
+		jump_timer = 0;
+	}
 	/**
 	 * specifies the Opponents character object
 	 * @param c
@@ -173,5 +197,10 @@ public class Character extends Hurtbox{
 	 */
 	public void takeDamage(double d) {
 		hp -= d;
+	}
+
+	
+	public double ground() {
+		return this.ground;
 	}
 }

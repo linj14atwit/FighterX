@@ -59,7 +59,8 @@ public class Move {
 	 * @param offSetX X position of hitbox relative to character
 	 * @param offSetY Y position of hitbox relative to character
 	 */
-	public Move(Pane parent, Character opponent, String type, double damage, int startup, int duration, int lag, double width, double height, double offSetX, double offSetY){
+	public Move(Pane parent, Character opponent, String type, double damage, 
+			int startup, int duration, int lag, double width, double height, double offSetX, double offSetY){
 		this.parent = parent;
 		this.opponent = opponent;
 		this.startup = startup;
@@ -104,6 +105,5 @@ public class Move {
 		}
 		return this;
 	}
-
 
 }
