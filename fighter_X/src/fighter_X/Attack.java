@@ -45,6 +45,7 @@ public class Attack extends Hitbox{
 	 */
 	public boolean connect(Character c){
 		if(this.collidesWith(c)){
+//			System.out.println("Attack, connect");
 			c.takeDamage(damage);
 			return true;
 		}

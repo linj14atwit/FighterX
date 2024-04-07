@@ -40,6 +40,8 @@ public class MainStage  extends Application{
 		
 		player1 = new Character(bp, 40, 400, 60, 180);
 		player2 = new Character(bp, 1040, 400, 60, 180);
+		player1.addOpponent(player2);
+		player2.addOpponent(player1);
 		
 		Rectangle ground = new Rectangle(0, player1.ground(), 1280, 4);
 		ground.setFill(new Color(0.1, 0.1, 0.3, 0.9));
