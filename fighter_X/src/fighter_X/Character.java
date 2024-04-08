@@ -1,5 +1,11 @@
 package fighter_X;
 
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.Pane;
 
@@ -13,6 +19,9 @@ public class Character extends Hurtbox{
 	private Pane parent; 
 	private Character opponent;
 	private int hp;
+	
+	private Image image;
+	private ImageView iv;
 	
 	private double standing_height;
 	private double crouch_height;
@@ -66,6 +75,7 @@ public class Character extends Hurtbox{
 	 */
 	public Character(Pane parent,  double x, double y, double width, double height, double ground, boolean input) {
 		super(x, y, width, height);
+		this.parent = parent;
 		this.ground = ground;
 		standing_height = height;
 		crouch_height = this.getHeight()*0.5;
@@ -79,6 +89,18 @@ public class Character extends Hurtbox{
 		jump_light = new Move(parent, Attack.AIR, 40, 6, 3, 0, 40, 60, 50, 80);
 		
 		if(input)this.enableInput();
+		
+		try {	
+//			this.image = new Image(new FileInputStream("C:\\Users\\jamli\\git\\FighterX\\fighter_X\\Images\\stand.png"));
+			this.image = new Image(new FileInputStream("..\\Images\\stand.png"));
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		iv = new ImageView();
+		iv.setImage(image);
+		imageUpdate();
+		this.parent.getChildren().add(iv);
 	}
 	
 	
@@ -151,6 +173,12 @@ public class Character extends Hurtbox{
 		});
 	}
 	
+	public void imageUpdate() {
+		iv.setFitHeight(this.getHeight());
+		iv.setFitWidth(this.getWidth());
+		iv.setX(this.getX());
+		iv.setY(this.getY());
+	}
 	/**
 	 * updates the current status of Character
 	 * @param deltaTime
@@ -172,6 +200,7 @@ public class Character extends Hurtbox{
 			this.setY(ground-standing_height);
 			this.setHeight(standing_height);
 		}
+		imageUpdate();
 	}
 	
 	/**
