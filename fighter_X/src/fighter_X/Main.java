@@ -17,17 +17,14 @@ public class Main extends Application{
 //		primaryStage.setTitle("Hello World!");
 //		this.stage = primaryStage;
 		
-		Parent root = FXMLLoader.load(getClass().getResource("Scene.fxml"));
+		Parent root = FXMLLoader.load(getClass().getResource("Character select.fxml"));
 		
 		Scene scene = new Scene(root);
 		primaryStage.setScene(scene);
 		
+
 		
-		final Button btn = new Button("Click Me!");
-//		final StackPane root = new StackPane();
-//		primaryStage.setScene(new Scene(root, 300, 250));
-		
-		primaryStage.setFullScreen(true);
+//		primaryStage.setFullScreen(true);
 		primaryStage.show();
 		primaryStage.setResizable(false);
 		

@@ -76,11 +76,11 @@ public class Move {
 	 * @param x
 	 * @param y
 	 */
-	public void doAttack(double x, double y) {
-		active = true;
-		now = new Attack(type, damage, width, height, x+offSetX, y+offSetY);
-		parent.getChildren().add(now);
-	}
+			public void doAttack(double x, double y) {
+				active = true;
+				now = new Attack(type, damage, width, height, x+offSetX, y+offSetY);
+				parent.getChildren().add(now);
+			}
 	
 	/**
 	 * update the current status of the move
@@ -90,7 +90,6 @@ public class Move {
 	public Move update(long deltaTime) {
 		timer += deltaTime;
 		
-		
 		if(!active) {
 			if(timer>((startup+duration+lag)*MainStage.FRAME_RATE)){
 				timer = 0;
@@ -98,7 +97,6 @@ public class Move {
 			}
 			return this;
 		}
-		
 
 		if(timer>((startup+duration)*MainStage.FRAME_RATE)) {
 			boolean b = parent.getChildren().remove(now);

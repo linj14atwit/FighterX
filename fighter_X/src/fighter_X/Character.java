@@ -8,6 +8,7 @@ import java.io.FileNotFoundException;
 
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
 
 /**
  * @author James Yu Lin
@@ -37,7 +38,10 @@ public class Character extends Hurtbox{
 	
 	private Move current = null;
 	private boolean is_crouched=false;
-	private boolean is_block = false;
+	private boolean is_blocking = false;
+	private long stun_Timer = 0;
+	
+	private long block_timer = 3000000;
 	
 	private Move light;
 	private Move crouch_light;
@@ -89,10 +93,10 @@ public class Character extends Hurtbox{
 		jump_light = new Move(parent, Attack.AIR, 40, 6, 3, 0, 40, 60, 50, 80);
 		
 		if(input)this.enableInput();
-		
+		/*
 		try {	
 //			this.image = new Image(new FileInputStream("C:\\Users\\jamli\\git\\FighterX\\fighter_X\\Images\\stand.png"));
-			this.image = new Image(new FileInputStream("..\\Images\\stand.png"));
+//			this.image = new Image(new FileInputStream("..\\Images\\stand.png"));
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -101,6 +105,7 @@ public class Character extends Hurtbox{
 		iv.setImage(image);
 		imageUpdate();
 		this.parent.getChildren().add(iv);
+		*/
 	}
 	
 	
@@ -128,6 +133,10 @@ public class Character extends Hurtbox{
 					move_direction = 1;
 					break;
 				
+				case U:
+					is_blocking = !is_jumping;
+					break;
+					
 				default:
 					break;
 				}
@@ -166,7 +175,10 @@ public class Character extends Hurtbox{
 			case D:
 				move_direction = move_direction==1 ? 0 : move_direction; 
 				break;
-			
+			case U:
+				is_blocking = false;
+				break;
+				
 			default:
 				break;
 			}
@@ -179,6 +191,14 @@ public class Character extends Hurtbox{
 		iv.setX(this.getX());
 		iv.setY(this.getY());
 	}
+	
+	public void colorUpdate() {
+		if(is_blocking) {
+			this.setFill(new Color(0.62, 0.45, 1.0, 0.6));
+			return;
+		}
+		this.setFill(new Color(0.2, 0.95, 0.95, 0.6));
+	}
 	/**
 	 * updates the current status of Character
 	 * @param deltaTime
@@ -189,7 +209,12 @@ public class Character extends Hurtbox{
 			current = current.update(deltaTime);
 //			move_direction = move_direction!=0 ? 0 : move_direction; 
 		}
-		
+		if(is_blocking) {
+			block_timer-=deltaTime;
+		}
+		else {
+			block_timer+=deltaTime;
+		}
 		if(is_crouched) {
 //			System.out.printf("y:%f -> ", this.getY());
 			this.setY(ground-crouch_height);
@@ -200,7 +225,8 @@ public class Character extends Hurtbox{
 			this.setY(ground-standing_height);
 			this.setHeight(standing_height);
 		}
-		imageUpdate();
+		colorUpdate();
+//		imageUpdate();
 	}
 	
 	/**
@@ -222,9 +248,11 @@ public class Character extends Hurtbox{
 	}
 	
 	public void startJump() {
+		is_blocking = false;
 		is_jumping = true;
 		jump_timer = 0;
 	}
+	
 	/**
 	 * specifies the Opponents character object
 	 * @param c
@@ -236,6 +264,7 @@ public class Character extends Hurtbox{
 		jump_light.addOpponent(c);
 	}
 	
+	
 	/**
 	 * takes damage
 	 * @param d
@@ -244,9 +273,23 @@ public class Character extends Hurtbox{
 //		System.out.printf("%s -%f%n", this.toString(), d);
 		hp -= d;
 	}
-
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public void block(long d) {
+		block_timer -= d;
+	}
 	
 	public double ground() {
 		return this.ground;
+	}
+	
+	public boolean getBlock() {
+		return this.is_blocking;
+	}
+	public int getHP() {
+		return this.hp;
 	}
 }
