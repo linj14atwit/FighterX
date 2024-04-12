@@ -55,7 +55,7 @@ public class MainStage  extends Application{
 		bp.getChildren().add(healthbar1);
 		bp.getChildren().add(healthbar2);
 		
-		player1 = new Character(bp, 40, 400, 60, 180);
+		player1 = new Character(bp, 60, 400, 60, 180);
 		player2 = new Character(bp, 1040, 400, 60, 180);
 		player1.addOpponent(player2);
 		player2.addOpponent(player1);
@@ -66,7 +66,6 @@ public class MainStage  extends Application{
 		bp.getChildren().add(player1);
 		bp.getChildren().add(player2);
 		bp.getChildren().add(ground);
-		
 		
 		
 		primaryStage.setScene(new Scene(bp, bp.getMaxWidth(), bp.getMaxHeight()));
@@ -95,7 +94,6 @@ public class MainStage  extends Application{
 		player1.update(deltaTime);
 		player2.update(deltaTime);
 		updateHealthBar(healthbar2);
-		
 		
 	}
 	

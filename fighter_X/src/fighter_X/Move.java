@@ -89,35 +89,26 @@ public class Move {
 	 */
 	public Move update(long deltaTime) {
 		timer += deltaTime;
-		
 		if(!active) {
 			if(timer>((startup+duration+lag)*MainStage.FRAME_RATE)){
 				timer = 0;
 				return null;
 			}
-			return this;
 		}
-
-		if(timer>((startup+duration)*MainStage.FRAME_RATE)) {
+		else if(timer>((startup+duration)*MainStage.FRAME_RATE)) {
 			boolean b = parent.getChildren().remove(now);
 			now = null;
-//			System.out.printf("%s, %d, %d, %b%n", timer, deltaTime, duration*MainStage.FRAME_RATE, b);
 			active = false;
 			hasTriggered = false;
-			return this;
 		}
-		
-		if(timer>(startup*MainStage.FRAME_RATE)) {
+		else if(timer>(startup*MainStage.FRAME_RATE)) {
 			if(!hasTriggered) {
 				if(now.connect(opponent)) {
 					hasTriggered=true;
 				}
 			}
-			return this;
 		}
 		return this;
-		
-		
 	}
 	
 	public void addOpponent(Character c) {

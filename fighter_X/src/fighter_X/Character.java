@@ -16,7 +16,7 @@ import javafx.scene.paint.Color;
  * Character class
  */
 public class Character extends Hurtbox{
-	
+	public static final long BLOCKTIME = 180;
 	private Pane parent; 
 	private Character opponent;
 	private int hp;
@@ -39,13 +39,17 @@ public class Character extends Hurtbox{
 	private Move current = null;
 	private boolean is_crouched=false;
 	private boolean is_blocking = false;
-	private long stun_Timer = 0;
+	private boolean is_stuned;
+	private long stun_timer = 0;
 	
-	private long block_timer = 3000000;
+	private long block_timer = BLOCKTIME;
 	
 	private Move light;
 	private Move crouch_light;
 	private Move jump_light;
+	
+	private Move heavy;
+	private Move antiAir;
 	
 	/**
 	 * Constructor
@@ -88,9 +92,12 @@ public class Character extends Hurtbox{
 		facing_left = -1; //1 for right, -1 for left
 		move_direction = 0; //1 for right, 0 for idle, -1 for left
 		
-		light = new Move(parent, Attack.NORMAL, 30, 6, 3, 12, 60, 50, 30, 10);
-		crouch_light = new Move(parent, Attack.LOW, 20, 7, 3, 13, 70, 30, 40, 10);
+		light = new Move(parent, Attack.NORMAL, 30, 6, 3, 12, 70, 50, 40, 10);
+		crouch_light = new Move(parent, Attack.LOW, 20, 7, 3, 13, 70, 30, 40, 50);
 		jump_light = new Move(parent, Attack.AIR, 40, 6, 3, 0, 40, 60, 50, 80);
+		
+		heavy = new Move(parent, Attack.NORMAL, 100, 17, 7, 20, 100, 50, 50, 30);
+		antiAir = new Move(parent, Attack.NORMAL, 100, 18, 3, 28, 55, 110, 40, -60);
 		
 		if(input)this.enableInput();
 		/*
@@ -155,9 +162,19 @@ public class Character extends Hurtbox{
 				}
 				light.doAttack(this.getX(), this.getY());
 				current = light;
-				System.out.println("light");
 				break;
-				
+			case L:
+				if(is_crouched) {
+					is_crouched = false;
+					this.setY(ground-standing_height);
+					this.setHeight(standing_height);
+					antiAir.doAttack(this.getX(), this.getY());
+					current = antiAir;
+					break;
+				}
+				heavy.doAttack(this.getX(), this.getY());
+				current = heavy;
+				break;
 			default:
 				break;
 			}
@@ -193,6 +210,10 @@ public class Character extends Hurtbox{
 	}
 	
 	public void colorUpdate() {
+		if(is_stuned) {
+			this.setFill(new Color(1.0, 1.0, 0.15, 0.6));
+			return;
+		}
 		if(is_blocking) {
 			this.setFill(new Color(0.62, 0.45, 1.0, 0.6));
 			return;
@@ -204,21 +225,34 @@ public class Character extends Hurtbox{
 	 * @param deltaTime
 	 */
 	public void update(long deltaTime) {
+		if(block_timer<=0) {
+			is_stuned = true;
+			is_blocking = false;
+			stun_timer = MainStage.FRAME_RATE*60*5;
+			block_timer = BLOCKTIME;
+			return;
+		}
+		if(is_stuned) {
+			stun_timer -= deltaTime;
+			colorUpdate();
+			if(stun_timer<=0)
+				is_stuned = false;
+			return;
+		}
 		this.move(deltaTime);
 		if(current != null) {
 			current = current.update(deltaTime);
-//			move_direction = move_direction!=0 ? 0 : move_direction; 
 		}
 		if(is_blocking) {
-			block_timer-=deltaTime;
+			block_timer-=deltaTime/MainStage.FRAME_RATE;
 		}
 		else {
-			block_timer+=deltaTime;
+			block_timer+=deltaTime/MainStage.FRAME_RATE;
+			if(block_timer > BLOCKTIME)
+				block_timer = BLOCKTIME;
 		}
 		if(is_crouched) {
-//			System.out.printf("y:%f -> ", this.getY());
 			this.setY(ground-crouch_height);
-//			System.out.println(this.getY());
 			this.setHeight(crouch_height);
 		}
 		else if(current==null && !is_jumping){
@@ -238,7 +272,6 @@ public class Character extends Hurtbox{
 		if(is_jumping) {
 			jump_timer += deltaTime;
 			this.setY(this.getY()-(-2*(jump_timer/MainStage.FRAME_RATE)+45));
-//			System.out.printf("%.0f, x:%d%n", this.getY(), (jump_timer/MainStage.FRAME_RATE));
 			
 			if(this.getHeight()+this.getY()>ground+4 && jump_timer>4*MainStage.FRAME_RATE) {
 				is_jumping = false;
@@ -262,6 +295,8 @@ public class Character extends Hurtbox{
 		light.addOpponent(c);
 		crouch_light.addOpponent(c);
 		jump_light.addOpponent(c);
+		heavy.addOpponent(c);
+		antiAir.addOpponent(c);
 	}
 	
 	
@@ -291,5 +326,16 @@ public class Character extends Hurtbox{
 	}
 	public int getHP() {
 		return this.hp;
+	}
+	
+	public void inputblock() {
+		this.setOnKeyPressed(e->{
+			System.out.println("a");
+			switch(e.getCode()) {
+			case P:
+				is_blocking = true;
+				break;
+			}
+		});
 	}
 }
