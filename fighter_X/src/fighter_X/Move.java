@@ -31,6 +31,8 @@ public class Move {
 	 * Constructor 
 	 * 
 	 * @param parent Parent Javafx to draw attack onto
+
+	 * @param opponent The character to check collision with
 	 * @param type The type of the move
 	 * @param damage How much damage to do
 	 * @param duration How long the hitbox lasts
@@ -41,12 +43,15 @@ public class Move {
 	 */
 	public Move(Pane parent, String type, double damage, int duration, double width, double height, double offSetX, double offSetY){
 		this(parent, type, damage, 0, duration, 0, width, height, offSetX, offSetY);
+	public Move(Pane parent, Character opponent, String type, double damage, int duration, double width, double height, double offSetX, double offSetY){
+		this(parent, opponent, type, damage, 0, duration, 0, width, height, offSetX, offSetY);
 	}
 
 	/**
 	 * Constructor
 	 * 
 	 * @param parent Parent Javafx to draw attack onto
+	 * @param opponent The character to check collision with
 	 * @param type The type of the move
 	 * @param damage How much damage to do
 	 * @param startup How much frames it takes for the hitbox to spawn
@@ -61,6 +66,9 @@ public class Move {
 			int startup, int duration, int lag, double width, double height, double offSetX, double offSetY){
 		this.parent = parent;
 		this.type = type;
+	public Move(Pane parent, Character opponent, String type, double damage, int startup, int duration, int lag, double width, double height, double offSetX, double offSetY){
+		this.parent = parent;
+		this.opponent = opponent;
 		this.startup = startup;
 		this.duration = duration;
 		this.lag = lag;
@@ -81,6 +89,11 @@ public class Move {
 				now = new Attack(type, damage, width, height, x+offSetX, y+offSetY);
 				parent.getChildren().add(now);
 			}
+	public void doAttack(double x, double y) {
+		active = true;
+		now = new Attack(type, damage, width, height, x+offSetX, y+offSetY);
+		parent.getChildren().add(now);
+	}
 	
 	/**
 	 * update the current status of the move
@@ -114,4 +127,21 @@ public class Move {
 	public void addOpponent(Character c) {
 		this.opponent = c;
 	}
+		if(!active) return null;
+		if(!hasTriggered) {
+			if(now.connect(opponent))hasTriggered=true;
+		}
+		timer += deltaTime;
+		if(timer>(duration*MainStage.FRAME_RATE)) {
+			boolean b = parent.getChildren().remove(now);
+			now = null;
+//			System.out.printf("%s, %d, %d, %b%n", timer, deltaTime, duration*MainStage.FRAME_RATE, b);
+			timer = 0;
+			active = false;
+			hasTriggered = false;
+		}
+		return this;
+	}
+
+
 }

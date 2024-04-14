@@ -45,10 +45,12 @@ public class Attack extends Hitbox{
 	 */
 	public boolean connect(Character c){
 		if(this.collidesWith(c)){
+
 //			System.out.println("Attack, connect");
 			if(c.getBlock()) {
 				c.block((long)damage*100);
 			}
+
 			c.takeDamage(damage);
 			return true;
 		}

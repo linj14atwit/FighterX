@@ -30,6 +30,7 @@ public abstract class Collider extends Rectangle{
 	 * @return if this collider and c overlaps
 	 */
 	public boolean collidesWith(Collider c) {
+
 		return this.intersects(c.getBoundsInLocal());
 //		if(!this.canCollide(c)) return false;
 //		if(
@@ -52,6 +53,28 @@ public abstract class Collider extends Rectangle{
 //		)
 //		return true;
 //		return false;
+
+		if(!this.canCollide(c)) return false;
+		if(
+			((
+				(this.getX())<(c.getX() + c.getWidth()) &&
+				(this.getX())>(c.getX())
+			) ||
+			(
+				(this.getX()+this.getWidth())<(c.getX() + c.getWidth()) &&
+				(this.getX()+c.getWidth())>(c.getX())
+			)) &&
+			((
+				(this.getY())<(c.getY() + c.getHeight()) &&
+				(this.getY())>(c.getY())
+			) ||
+			(
+				(this.getY()+this.getHeight())<(c.getY() + c.getHeight()) &&
+				(this.getY()+c.getHeight())>(c.getY())
+			))
+		)
+		return true;
+		return false;
 	}
 	
 	/**

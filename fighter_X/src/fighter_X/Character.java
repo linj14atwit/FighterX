@@ -1,5 +1,6 @@
 package fighter_X;
 
+
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
@@ -10,25 +11,34 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 
+import javafx.scene.input.KeyCode;
+import javafx.scene.layout.Pane;
+
+
 /**
  * @author James Yu Lin
  * 
  * Character class
  */
 public class Character extends Hurtbox{
+
 	public static final long BLOCKTIME = 180;
+
 	private Pane parent; 
 	private Character opponent;
 	private int hp;
 	
+
 	private Image image;
 	private ImageView iv;
 	
+
 	private double standing_height;
 	private double crouch_height;
 	private double ground;
 	
 	private int facing_left;
+
 	private int move_direction=0;
 	
 	private boolean is_jumping;
@@ -50,6 +60,15 @@ public class Character extends Hurtbox{
 	
 	private Move heavy;
 	private Move antiAir;
+
+	private int move_direction;
+	
+	private double speed;
+	
+	private Move current = null;
+	private boolean is_crouched=false;
+	private Move light;
+
 	
 	/**
 	 * Constructor
@@ -84,6 +103,8 @@ public class Character extends Hurtbox{
 	public Character(Pane parent,  double x, double y, double width, double height, double ground, boolean input) {
 		super(x, y, width, height);
 		this.parent = parent;
+	public Character(Pane parent, double x, double y, double width, double height, double ground, boolean input) {
+		super(x, y, width, height);
 		this.ground = ground;
 		standing_height = height;
 		crouch_height = this.getHeight()*0.5;
@@ -113,6 +134,9 @@ public class Character extends Hurtbox{
 		imageUpdate();
 		this.parent.getChildren().add(iv);
 		*/
+		light = new Move(parent, opponent, Attack.NORMAL, 30, 12, 60, 50, 30, 10);
+		
+		if(input)this.enableInput();
 	}
 	
 	
@@ -127,6 +151,7 @@ public class Character extends Hurtbox{
 				case W:
 					startJump();
 					break;
+//					startJump();
 				case A:
 					move_direction = -1;
 					break;
@@ -175,6 +200,11 @@ public class Character extends Hurtbox{
 				heavy.doAttack(this.getX(), this.getY());
 				current = heavy;
 				break;
+				light.doAttack(this.getX(), this.getY());
+				current = light;
+				System.out.println("light");
+				break;
+				
 			default:
 				break;
 			}
@@ -196,6 +226,7 @@ public class Character extends Hurtbox{
 				is_blocking = false;
 				break;
 				
+			
 			default:
 				break;
 			}
@@ -251,6 +282,12 @@ public class Character extends Hurtbox{
 			if(block_timer > BLOCKTIME)
 				block_timer = BLOCKTIME;
 		}
+		this.move();
+		if(current != null) {
+			current = current.update(deltaTime);
+			move_direction = move_direction!=0 ? 0 : move_direction; 
+		}
+		
 		if(is_crouched) {
 			this.setY(ground-crouch_height);
 			this.setHeight(crouch_height);
@@ -261,6 +298,10 @@ public class Character extends Hurtbox{
 		}
 		colorUpdate();
 //		imageUpdate();
+		else if(current==null){
+			this.setY(ground-standing_height);
+			this.setHeight(standing_height);
+		}
 	}
 	
 	/**
@@ -284,6 +325,8 @@ public class Character extends Hurtbox{
 		is_blocking = false;
 		is_jumping = true;
 		jump_timer = 0;
+	public void move() {
+		this.setX(this.getX()+5*move_direction);
 	}
 	
 	/**
@@ -292,6 +335,7 @@ public class Character extends Hurtbox{
 	 */
 	public void addOpponent(Character c) {
 		this.opponent = c;
+
 		light.addOpponent(c);
 		crouch_light.addOpponent(c);
 		jump_light.addOpponent(c);
@@ -299,12 +343,15 @@ public class Character extends Hurtbox{
 		antiAir.addOpponent(c);
 	}
 	
-	
+
+	}
+
 	/**
 	 * takes damage
 	 * @param d
 	 */
 	public void takeDamage(double d) {
+
 //		System.out.printf("%s -%f%n", this.toString(), d);
 		hp -= d;
 	}
@@ -338,4 +385,8 @@ public class Character extends Hurtbox{
 			}
 		});
 	}
+
+		hp -= d;
+	}
+
 }

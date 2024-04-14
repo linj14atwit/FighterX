@@ -66,6 +66,12 @@ public class MainStage  extends Application{
 		bp.getChildren().add(player1);
 		bp.getChildren().add(player2);
 		bp.getChildren().add(ground);
+		player1 = new Character(bp, 40, 400, 60, 180);
+		player2 = new Character(bp, 1040, 400, 60, 180);
+		bp.getChildren().add(player1);
+		bp.getChildren().add(player2);
+		
+		
 		
 		
 		primaryStage.setScene(new Scene(bp, bp.getMaxWidth(), bp.getMaxHeight()));
@@ -87,6 +93,11 @@ public class MainStage  extends Application{
 		    }
 		};
 		animator.start();
+		
+	}
+	
+	public void update(long deltaTime) {
+		player1.update(deltaTime);
 		
 	}
 	
