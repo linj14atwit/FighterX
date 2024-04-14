@@ -31,6 +31,7 @@ public class Move {
 	 * Constructor 
 	 * 
 	 * @param parent Parent Javafx to draw attack onto
+
 	 * @param opponent The character to check collision with
 	 * @param type The type of the move
 	 * @param damage How much damage to do
@@ -40,6 +41,8 @@ public class Move {
 	 * @param offSetX
 	 * @param offSetY
 	 */
+	public Move(Pane parent, String type, double damage, int duration, double width, double height, double offSetX, double offSetY){
+		this(parent, type, damage, 0, duration, 0, width, height, offSetX, offSetY);
 	public Move(Pane parent, Character opponent, String type, double damage, int duration, double width, double height, double offSetX, double offSetY){
 		this(parent, opponent, type, damage, 0, duration, 0, width, height, offSetX, offSetY);
 	}
@@ -59,6 +62,10 @@ public class Move {
 	 * @param offSetX X position of hitbox relative to character
 	 * @param offSetY Y position of hitbox relative to character
 	 */
+	public Move(Pane parent, String type, double damage, 
+			int startup, int duration, int lag, double width, double height, double offSetX, double offSetY){
+		this.parent = parent;
+		this.type = type;
 	public Move(Pane parent, Character opponent, String type, double damage, int startup, int duration, int lag, double width, double height, double offSetX, double offSetY){
 		this.parent = parent;
 		this.opponent = opponent;
@@ -77,6 +84,11 @@ public class Move {
 	 * @param x
 	 * @param y
 	 */
+			public void doAttack(double x, double y) {
+				active = true;
+				now = new Attack(type, damage, width, height, x+offSetX, y+offSetY);
+				parent.getChildren().add(now);
+			}
 	public void doAttack(double x, double y) {
 		active = true;
 		now = new Attack(type, damage, width, height, x+offSetX, y+offSetY);
@@ -89,6 +101,32 @@ public class Move {
 	 * @return
 	 */
 	public Move update(long deltaTime) {
+		timer += deltaTime;
+		if(!active) {
+			if(timer>((startup+duration+lag)*MainStage.FRAME_RATE)){
+				timer = 0;
+				return null;
+			}
+		}
+		else if(timer>((startup+duration)*MainStage.FRAME_RATE)) {
+			boolean b = parent.getChildren().remove(now);
+			now = null;
+			active = false;
+			hasTriggered = false;
+		}
+		else if(timer>(startup*MainStage.FRAME_RATE)) {
+			if(!hasTriggered) {
+				if(now.connect(opponent)) {
+					hasTriggered=true;
+				}
+			}
+		}
+		return this;
+	}
+	
+	public void addOpponent(Character c) {
+		this.opponent = c;
+	}
 		if(!active) return null;
 		if(!hasTriggered) {
 			if(now.connect(opponent))hasTriggered=true;
